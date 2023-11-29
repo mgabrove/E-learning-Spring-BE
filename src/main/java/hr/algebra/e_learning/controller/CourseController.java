@@ -3,9 +3,11 @@ package hr.algebra.e_learning.controller;
 import hr.algebra.e_learning.dto.course.CourseDTO;
 import hr.algebra.e_learning.dto.course.CreateCourseDTO;
 import hr.algebra.e_learning.dto.course.StudentCourseDTO;
+import hr.algebra.e_learning.exception.EntityNotFoundException;
 import hr.algebra.e_learning.service.course.CourseService;
 import hr.algebra.e_learning.service.course.EnrollmentService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -37,6 +39,17 @@ public class CourseController {
     @PostMapping("")
     public void save(@RequestBody final CreateCourseDTO courseDTO) {
         courseService.save(courseDTO);
+    }
+
+    @PutMapping
+    public ResponseEntity<CourseDTO> update(@RequestBody final CourseDTO courseDTO,
+                       @PathVariable final Long id) {
+        try {
+            return new ResponseEntity<>(courseService.update(courseDTO, id).get(), HttpStatus.OK);
+        }
+        catch (EntityNotFoundException ex) {
+            return new ResponseEntity<>(courseService.update(courseDTO, id).get(), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @DeleteMapping("")

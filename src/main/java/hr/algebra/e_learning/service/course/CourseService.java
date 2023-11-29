@@ -11,6 +11,7 @@ public interface CourseService {
     List<CourseDTO> getAll();
     Optional<CourseDTO> getById(Long id);
     void save(CreateCourseDTO courseDto);
+    Optional<CourseDTO> update(CourseDTO courseDto, Long id);
     void delete(CourseDTO courseDto);
     void deleteById(Long id);
     List<StudentCourseDTO> getAllForStudent(Long id);

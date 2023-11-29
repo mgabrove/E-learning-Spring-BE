@@ -7,6 +7,7 @@ import hr.algebra.e_learning.dto.lecture.CreateLectureDTO;
 import hr.algebra.e_learning.dto.progress.ProgressDTO;
 import hr.algebra.e_learning.entity.Course;
 import hr.algebra.e_learning.entity.Student;
+import hr.algebra.e_learning.exception.EntityNotFoundException;
 import hr.algebra.e_learning.mapper.course.CourseDtoToEntityMapper;
 import hr.algebra.e_learning.mapper.course.CourseEntityToDtoMapper;
 import hr.algebra.e_learning.mapper.course.CourseEntityToStudentCourseDtoMapper;
@@ -56,6 +57,32 @@ public class CourseServiceImpl implements CourseService {
             lectureDTO.setCourseId(savedCourse.getId());
             lectureService.save(lectureDTO);
         }
+    }
+
+    @Override
+    public Optional<CourseDTO> update(final CourseDTO courseDto, Long id) {
+        Optional<Course> optionalCourse = courseRepository.findById(id);
+
+        if(optionalCourse.isEmpty()) {
+            throw new EntityNotFoundException("Course entity with ID: '" + id +
+                    "' does not exist!");
+        } else {
+            Course course = optionalCourse.get();
+
+            course.setTitle(courseDto.getTitle());
+            course.setDescription(courseDto.getDescription());
+
+            courseRepository.save(course);
+        }
+
+        Course updateCourse = courseRepository.findById(id).get();
+        CourseDTO updateCourseDTO = new CourseDTO();
+        updateCourseDTO.setId(updateCourseDTO.getId());
+        updateCourseDTO.setTitle(updateCourseDTO.getTitle());
+        updateCourseDTO.setDescription(updateCourseDTO.getDescription());
+        updateCourseDTO.setProgressList(updateCourseDTO.getProgressList());
+
+        return Optional.of(updateCourseDTO);
     }
 
     @Override
